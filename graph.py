@@ -32,20 +32,35 @@ class Graph:
         if value not in self.graph:
             self.graph[value] = Node(value)
         return self.graph[value]
-    
+
     def dfs(self):
         passed = set()
-        for node in self.graph:
-            if node not in passed:
-                passed.add(node)
-                self._dfs_inner(self.graph[node], passed)
+        for node_value in self.graph:
+            if node_value not in passed:
+                self._dfs_without_recur(self.graph[node_value], passed)
 
-    def _dfs_inner(self, node: Node, passed: set):
+    def _dfs_without_recur(self, node: Node, passed: set):
+        stack = [node.value]
+        while stack:
+            node_value = stack[-1]
+            if node_value not in passed:
+                print(node_value)
+                passed.add(node_value)
+            hasChildren = False
+            for edge in self.graph[node_value].edges:
+                if edge.adjacentNode.value not in passed:
+                    stack.append(edge.adjacentNode.value)
+                    hasChildren = True
+                    break
+            if not hasChildren:
+                stack.pop()
+
+    def _dfs_with_recur(self, node: Node, passed: set):
         print(node.value)
         passed.add(node.value)
         for edge in node.edges:
             if edge.adjacentNode.value not in passed:
-                self._dfs_inner(edge.adjacentNode, passed)
+                self._dfs_with_recur(edge.adjacentNode, passed)
 
 data = \
 [
