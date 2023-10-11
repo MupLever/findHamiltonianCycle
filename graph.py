@@ -26,19 +26,23 @@ class Graph:
         for from_, to_, weight in data_input:
             node = self.add_or_get_node(from_)
             adjacent_node = self.add_or_get_node(to_)
+            self.add_node(node, adjacent_node, weight)
 
-            edge = self.Edge(adjacent_node, weight)
-            node.edges.add(edge)
-
-            edge = self.Edge(node, weight)
-            adjacent_node.edges.add(edge)
-
-    def add_or_get_node(self, value: int) -> None:
+    def add_or_get_node(self, value: int) -> Node:
         """adding and returning a node"""
 
         if value not in self.graph:
             self.graph[value] = self.Node(value)
         return self.graph[value]
+
+    def add_node(self, from_node: int, to_node: int, weight: int) -> None:
+        """adding an edge between from_node and to_node"""
+
+        edge = self.Edge(from_node, weight)
+        to_node.edges.add(edge)
+
+        edge = self.Edge(to_node, weight)
+        from_node.edges.add(edge)
 
     def traverse(self, *, how="dfs") -> None:
         """depth-first traversal of all nodes"""
