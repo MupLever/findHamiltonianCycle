@@ -1,5 +1,6 @@
 from typing import List
-# from collections import defaultdict
+from queue import Queue
+
 
 class Graph:
     """an undirected graph class implemented through a dictionary"""
@@ -39,13 +40,34 @@ class Graph:
             self.graph[value] = self.Node(value)
         return self.graph[value]
 
-    def dfs(self) -> None:
+    def traverse(self, *, how="dfs") -> None:
         """depth-first traversal of all nodes"""
 
         passed = set()
         for value, node in self.graph.items():
             if value not in passed:
-                self._dfs_without_recur(node, passed)
+                if how == "bfs":
+                    self._bfs(node, passed)
+                elif how == "dfs":
+                    self._dfs_with_recur(node, passed)
+                elif how == "rdfs":
+                    self._dfs_without_recur(node, passed)
+                else:
+                    raise ValueError
+
+    def _bfs(self, node: Node, passed: set):
+        """breadth-first traversal with queue"""
+
+        queue = Queue()
+        queue.put(node.value)
+        while not queue.empty():
+            node_value = queue.get()
+            passed.add(node_value)
+            print(node_value)
+            for edge in self.graph[node_value].edges:
+                if edge.adjacent_node.value not in passed:
+                    queue.put(edge.adjacent_node.value)
+                    passed.add(edge.adjacent_node.value)
 
     def _dfs_without_recur(self, node: Node, passed: set) -> None:
         """depth-first traversal without recursion"""
@@ -67,14 +89,15 @@ class Graph:
 
     def _dfs_with_recur(self, node: Node, passed: set) -> None:
         """depth-first traversal with recursion"""
+
         print(node.value)
         passed.add(node.value)
         for edge in node.edges:
             if edge.adjacent_node.value not in passed:
                 self._dfs_with_recur(edge.adjacent_node, passed)
 
-data = \
-[
+
+data = [
     [7, 6, 1],
     [7, 2, 1],
     [7, 5, 1],
@@ -85,4 +108,4 @@ data = \
 ]
 
 graph = Graph(data)
-graph.dfs()
+graph.traverse(how="rdfs")
