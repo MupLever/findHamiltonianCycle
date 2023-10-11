@@ -43,17 +43,19 @@ class Graph:
     def traverse(self, *, how="dfs") -> None:
         """depth-first traversal of all nodes"""
 
+        if how == "bfs":
+            traverse_ = self._bfs
+        elif how == "dfs":
+           traverse_ =  self._dfs_with_recur
+        elif how == "rdfs":
+           traverse_ =  self._dfs_without_recur
+        else:
+            raise ValueError
+
         passed = set()
         for value, node in self.graph.items():
             if value not in passed:
-                if how == "bfs":
-                    self._bfs(node, passed)
-                elif how == "dfs":
-                    self._dfs_with_recur(node, passed)
-                elif how == "rdfs":
-                    self._dfs_without_recur(node, passed)
-                else:
-                    raise ValueError
+                traverse_(node, passed)
 
     def _bfs(self, node: Node, passed: set):
         """breadth-first traversal with queue"""
