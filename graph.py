@@ -37,7 +37,7 @@ class Graph:
             return hash(self.value)
 
         def __repr__(self) -> str:
-            return f"{self.value}"
+            return f"<Node: {self.value=}>"
 
     class Edge:
         """edge class storing the incident node"""
@@ -48,6 +48,9 @@ class Graph:
 
         def __lt__(self, other) -> bool:
             return self.weight < other.weight
+
+        def __repr__(self):
+            return f"<Edge: {self.weight=}, {self.incident_node=}>"
 
     def __init__(self, data_input: List[Any, Any, int]):
         self.graph = {}
@@ -73,7 +76,7 @@ class Graph:
 
     def traverse(self, *, how="dfs") -> None:
         """
-        depth-first traversal of all nodes
+        wrapper for traversing all nodes of the graph
 
         :type how: str
         :values how: 'bfs', 'dfs', 'rdfs'
@@ -135,7 +138,7 @@ class Graph:
                 self._dfs_with_recur(edge.incident_node, passed)
 
     def _ore_theorem(self) -> bool:
-        """verifies Dirac's theorem"""
+        """verifies Ore's theorem"""
 
         if self.n_vertex < 3:
             return False
@@ -163,6 +166,8 @@ class Graph:
         raise ValueError("nodes are not adjacent")
 
     def _nearest_not_passed_node(self, node: Node, passed: set) -> Node:
+        """returns the nearest unmarked node"""
+
         edges_to_not_passed_nodes = filter(
             lambda edge: edge.incident_node not in passed,
             node.edges)
